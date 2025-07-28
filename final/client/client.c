@@ -16,16 +16,10 @@ void display_wait_n_count(init_data_t data, int sock){
     }
     putchar('\n');
 
-    gotoxy(data.grid_size - 7, data.grid_size/2 - 1);
+    gotoxy(data.grid_size - 7, data.grid_size/2);
     printf("Flipping Board!");
-    gotoxy(data.grid_size -5, data.grid_size/2);
+    gotoxy(data.grid_size -5, data.grid_size/2 + 2);
     printf("Waiting...");
-    gotoxy(data.grid_size -2, data.grid_size/2 + 2);
-    printf("[Key]");
-    gotoxy(data.grid_size - 6, data.grid_size/2 + 3);
-    printf("  w       i  ");
-    gotoxy(data.grid_size - 6, data.grid_size/2 + 4);
-    printf("a s d   j k l");
 
     gotoxy(1, 2 + data.grid_size);
     for(int j = 0; j < data.grid_size; j++){
