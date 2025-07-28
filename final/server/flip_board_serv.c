@@ -47,7 +47,7 @@ int main(int argc, char *argv[]){
     pthread_t user_tid[LIMIT_CLNT];
 
     int result = 0;     // game result
-    int UDP_PORT = 0;   // UDP port = TCP port + 1
+    int UDP_PORT = 0;   // UDP port
 
     int c;
 	extern char *optarg;
