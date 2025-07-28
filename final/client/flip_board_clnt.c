@@ -282,25 +282,22 @@ void display_all(init_data_t data){
                     }
                     print_check = 1;
                 }
-                if(print_check == 1) continue;
+                if(print_check == 1){
+                    continue;
+                }
 
                 for(int k = 0; k < data.player_cnt; k++){ // 플레이어 출력
                     if(temp == player_pos[k]){
                         if(k%2 == 0){               // red
-                            if(k == data.player_id){   // 1단계 통과 시 위 단계가 중복으로 일어나면 안되므로 생략
-                                continue;
-                            }
                             printf("\033[38;2;234;91;111m");
                             printf("U ");
                             printf("\033[0m");
                         }else{                      // blue
-                            if(k == data.player_id){
-                                continue;
-                            }
                             printf("\033[38;2;119;190;240m");
                             printf("U ");
                             printf("\033[0m");    
                         }
+
                         print_check = 1;
                         break;
                     }
