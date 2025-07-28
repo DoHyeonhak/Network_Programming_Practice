@@ -66,7 +66,7 @@ int main(int argc, char* argv[]){
     memset(&adr, 0, sizeof(adr));
     adr.sin_family=AF_INET;
     adr.sin_addr.s_addr=htonl(INADDR_ANY);
-    adr.sin_port=htons(atoi(argv[2]) + 1);
+    adr.sin_port=htons(atoi(argv[2]));
 
 
     int flag;
@@ -75,8 +75,8 @@ int main(int argc, char* argv[]){
 
     // reuse option
     int optvalue = 1;
-    if(setsockopt(udp_sock, SOL_SOCKET, SO_REUSEPORT, &optvalue, sizeof(optvalue)) < 0){    // SO_REUSEPORT - multicast에서 필수
-        error_handling("setsockopt(SO_REUSEPORT) failed");
+    if(setsockopt(udp_sock, SOL_SOCKET, SO_REUSEADDR, &optvalue, sizeof(optvalue)) < 0){    // SO_REUSEADDR - multicast에서 필수
+        error_handling("setsockopt(SO_REUSEADDR) failed");
     }
     
     if(bind(udp_sock, (struct sockaddr*)&adr, sizeof(adr)) == -1)

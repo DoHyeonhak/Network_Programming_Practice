@@ -107,7 +107,7 @@ int main(int argc, char *argv[]){
     basic_data.board_cnt = atoi(b_value);
     basic_data.time = atoi(t_value);
     
-    UDP_PORT = (atoi(p_value) + 1);          
+    UDP_PORT = (atoi(p_value));          
 
     // TCP socket process
     int serv_sock;
@@ -254,7 +254,7 @@ void* center_handler(void* arg){ // UDP
     
     udp_sock = socket(PF_INET, SOCK_DGRAM, 0);
     if (udp_sock == -1)
-    error_handling("UDP socket creation error");
+        error_handling("UDP socket creation error");
 
     memset(&mul_adr, 0, sizeof(mul_adr));
     mul_adr.sin_family = AF_INET;
