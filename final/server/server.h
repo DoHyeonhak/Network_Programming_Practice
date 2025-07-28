@@ -1,6 +1,6 @@
 #define BUF_SIZE 30
 #define LIMIT_CLNT 8
-#define MAX_GRID_SIZE 32
+#define MAX_GRID_SIZE 30
 #define MAX_USER 8
 #define MAX_BOARD 40
 

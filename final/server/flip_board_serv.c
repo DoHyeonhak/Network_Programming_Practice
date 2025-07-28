@@ -92,11 +92,17 @@ int main(int argc, char *argv[]){
     }
 
     // Team balance를 위한 n, b가 짝수인지 확인
-    if(atoi(n_value)%2 != 0){
-        printf("n_value is not even number\n\n");
+    if(atoi(n_value)%2 != 0 || atoi(n_value) >= MAX_USER){
+        printf("n value is incorrect\n\n");
+        print_arg_msg();
         return 1;
-    }else if(atoi(b_value)%2 != 0){
-        printf("b_value is not even number\n\n");
+    }else if(atoi(b_value)%2 != 0 || atoi(b_value) >= MAX_BOARD){
+        printf("b value is incorrect\n\n");
+        print_arg_msg();
+        return 1;
+    }else if(atoi(s_value) > MAX_GRID_SIZE){
+        printf("s value is incorrect\n\n");
+        print_arg_msg();
         return 1;
     }
 
@@ -370,9 +376,9 @@ void create_player_pos(){
 void print_arg_msg(){
     printf("Usage : ./game_serv -n [value] -s [value] -b [value] -t [value] -p [value] \n");
     printf("Option : \n");
-	printf("\t-n : the number of players (only even number, maximum is 40)\n");
-	printf("\t-s : grid size\n");
-	printf("\t-b : the number of board (only even number, maximum is 8)\n");
+	printf("\t-n : the number of players (only even number, maximum is 8)\n");
+	printf("\t-s : grid size (maximum is 30)\n");
+	printf("\t-b : the number of board (only even number, maximum is 40)\n");
     printf("\t-t : game progress time\n");
     printf("\t-p : server port\n");
 }
