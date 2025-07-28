@@ -1,5 +1,10 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
 #define BUF_SIZE 30
-#define MAX_GRID_SIZE 32
+#define MAX_GRID_SIZE 30
 #define MAX_USER 8
 #define MAX_BOARD 40
 #define ESC 27
@@ -14,11 +19,6 @@ typedef struct{
     int board_cnt;  // -b로 받은 판 개수
     int time;       // 게임 시간
 }init_data_t;
-
-typedef struct{
-    int grid_data;  // 게임 판에 대한 총 count
-    int left_time;  // 남은 시간
-}game_data_t;
 
 typedef struct{
     int id;
@@ -46,4 +46,3 @@ typedef struct{
 void display_wait_n_count(init_data_t data, int sock);
 void display_result(init_data_t data, Result_t result);
 void error_handling(char *message);
-

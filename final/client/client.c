@@ -1,11 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
 #include "client.h"
 #include "Console.h"
-
 
 void display_wait_n_count(init_data_t data, int sock){
     

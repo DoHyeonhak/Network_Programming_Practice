@@ -26,6 +26,7 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; // mutex
 // function call
 void* recv_handler(void* arg);
 void* send_handler(void* arg);
+void display_all(init_data_t data);
 
 
 int main(int argc, char* argv[]){
@@ -111,98 +112,10 @@ int main(int argc, char* argv[]){
 
         if(time_out) break;
         
-        pthread_mutex_lock(&mutex);
+        display_all(main_data);
 
-        gotoxy(1, 2);
-        printf("                       ");
-        gotoxy(1, 2);
-        if(left_sec == 0 && left_usec <= 7000){
-            printf("Time out");
-        }else{
-            printf("Time: %d.%d sec\n", left_sec, left_usec);
-        }
-
-        gotoxy(1, 3);
-        for(int i = 0; i < main_data.grid_size; i++){
-            printf("\033[38;2;255;203;97m");
-            printf("- ");
-            printf("\033[0m");
-        }
-        
-        // 1. 그리드 전체 좌표마다 position을 비교하여 출력 - O
-        // 2. player_cnt와 panel_cnt만큼 반복하여 해당 위치에 출력 - 그러나 이 방법은 공백 처리가 문제
-        gotoxy(1, 4);
-        for(int i = 0; i < main_data.grid_size; i++){
-            for(int j = 0; j < main_data.grid_size; j++){
-                int temp = j + i * main_data.grid_size;
-                int player_print = 0;
-                int board_print = 0;
-                for(int k = 0; k < main_data.player_cnt; k++){
-                    if(temp == player_pos[k]){
-                        if(k%2 == 0){               // red
-                            if(k == main_data.player_id){
-                                printf("\033[38;2;252;127;0m");
-                                printf("R ");
-                                printf("\033[0m");
-                            }else{
-                                printf("\033[38;2;234;91;111m");
-                                printf("U ");
-                                printf("\033[0m");
-                            }
-                        }else{                      // blue
-                            if(k == main_data.player_id){
-                                printf("\033[38;2;0;255;255m");
-                                printf("B ");
-                                printf("\033[0m");    
-                            }else{
-                                printf("\033[38;2;119;190;240m");
-                                printf("U ");
-                                printf("\033[0m");    
-                            }
-                        }
-                        player_print = 1;
-                        break;
-                    }
-                }
-                if(player_print == 1){  // 플레이어가 출력된 경우 continue
-                    continue;
-                }
-                
-                for(int k = 0; k < main_data.board_cnt; k++){
-                    if(temp == board[k].pos){
-                        if(board[k].color == 1){    // red
-                            printf("\033[38;2;234;91;111m");
-                            printf("■ ");
-                            printf("\033[0m");
-                        }else{                      // blue
-                            printf("\033[38;2;119;190;240m");
-                            printf("■ ");
-                            printf("\033[0m");
-                        }
-                        board_print = 1;
-                        break;
-                    }
-                }
-                if(board_print == 1){   // 판이 출력된 경우 continue
-                    continue;
-                }
-
-                printf("  ");   // 아무것도 출력되지 않은 경우 공백 출력
-            }
-            putchar('\n');
-        }
-
-        gotoxy(1, 4 + main_data.grid_size);
-        for(int i = 0; i < main_data.grid_size; i++){
-            printf("\033[38;2;255;203;97m");
-            printf("- ");
-            printf("\033[0m");
-        }
-
-        fflush(stdout);
-        pthread_mutex_unlock(&mutex);
-
-        usleep(3000);        
+        usleep(5000);        
+    
     }
 
     Result_t res = {0, 0};
@@ -324,4 +237,111 @@ void* send_handler(void* arg){
     }
     
     return NULL;
+}
+
+void display_all(init_data_t data){
+
+        pthread_mutex_lock(&mutex);
+
+        printf("\e[?25l");  // hide cursor
+
+        gotoxy(1, 2);
+        printf("                       ");
+        gotoxy(1, 2);
+        if(left_sec == 0 && left_usec <= 7000){
+            printf("Time out");
+        }else{
+            printf("Time: %d.%d sec\n", left_sec, left_usec);
+        }
+
+        gotoxy(1, 3);
+        for(int i = 0; i < data.grid_size; i++){
+            printf("\033[38;2;255;203;97m");
+            printf("- ");
+            printf("\033[0m");
+        }
+        
+        // 1. 그리드 전체 좌표마다 position을 비교하여 출력
+        gotoxy(1, 4);
+        for(int i = 0; i < data.grid_size; i++){
+            for(int j = 0; j < data.grid_size; j++){
+                int temp = j + i * data.grid_size;
+                int print_check = 0;
+
+                // 츨력 레이어
+                // 1.플레이어 자신, 2.다른 플레이어, 3.판넬, 4.공백
+                if(temp == player_pos[data.player_id]){ // 해당 위치가 클라이언트 자신의 위치와 같은 경우
+                    if(data.player_id%2 == 0){
+                        printf("\033[38;2;252;127;0m");
+                        printf("R ");
+                        printf("\033[0m");
+                    }else{
+                        printf("\033[38;2;0;255;255m");
+                        printf("B ");
+                        printf("\033[0m");    
+                    }
+                    print_check = 1;
+                }
+                if(print_check == 1) continue;
+
+                for(int k = 0; k < data.player_cnt; k++){ // 플레이어 출력
+                    if(temp == player_pos[k]){
+                        if(k%2 == 0){               // red
+                            if(k == data.player_id){   // 1단계 통과 시 위 단계가 중복으로 일어나면 안되므로 생략
+                                continue;
+                            }
+                            printf("\033[38;2;234;91;111m");
+                            printf("U ");
+                            printf("\033[0m");
+                        }else{                      // blue
+                            if(k == data.player_id){
+                                continue;
+                            }
+                            printf("\033[38;2;119;190;240m");
+                            printf("U ");
+                            printf("\033[0m");    
+                        }
+                        print_check = 1;
+                        break;
+                    }
+                }
+                if(print_check == 1){  // 플레이어가 출력된 경우 continue
+                    continue;
+                }
+                
+                for(int k = 0; k < data.board_cnt; k++){ // 판 출력
+                    if(temp == board[k].pos){
+                        if(board[k].color == 1){    // red
+                            printf("\033[38;2;234;91;111m");
+                            printf("■ ");
+                            printf("\033[0m");
+                        }else{                      // blue
+                            printf("\033[38;2;119;190;240m");
+                            printf("■ ");
+                            printf("\033[0m");
+                        }
+                        print_check = 1;
+                        break;
+                    }
+                }
+                if(print_check == 1){   // 판이 출력된 경우 continue
+                    continue;
+                }
+
+                printf("  ");   // 아무것도 출력되지 않은 경우 공백 출력
+            }
+            putchar('\n');
+        }
+
+        gotoxy(1, 4 + data.grid_size);
+        for(int i = 0; i < data.grid_size; i++){
+            printf("\033[38;2;255;203;97m");
+            printf("- ");
+            printf("\033[0m");
+        }
+
+        fflush(stdout);
+        printf("\e[?25h");  // show cursor
+        pthread_mutex_unlock(&mutex);
+
 }
